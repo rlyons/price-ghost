@@ -179,17 +179,20 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                         title: Text('Scanned: $_latestBarcode'),
                         subtitle: const Text('Tap to view details'),
                         onTap: () async {
-                        final code = _latestBarcode!;
-                        setState(() => _processing = true);
-                        try {
-                          final product = await ref.read(productFutureProvider(code).future);
-                          if (!mounted) return;
-                          await Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)));
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Lookup failed: $e')));
-                        } finally {
-                          setState(() => _processing = false);
-                        }
+                          final code = _latestBarcode!;
+                          setState(() => _processing = true);
+                          try {
+                            final product = await ref.read(productFutureProvider(code).future);
+                            if (!mounted) return;
+                            await Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)));
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Lookup failed: $e')));
+                          } finally {
+                            setState(() => _processing = false);
+                          }
+                        },
+                      ),
+                    ),
                   ),
               ],
             ),

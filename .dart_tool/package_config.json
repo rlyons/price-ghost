@@ -207,9 +207,9 @@
     },
     {
       "name": "fl_chart",
-      "rootUri": "file:///Users/rlyons/.pub-cache/hosted/pub.dev/fl_chart-0.55.2",
+      "rootUri": "file:///Users/rlyons/.pub-cache/hosted/pub.dev/fl_chart-0.66.2",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.2"
     },
     {
       "name": "flutter",
