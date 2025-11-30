@@ -40,6 +40,23 @@ flutter pub get
 - Note: For Firebase Messaging, add `google-services.json` (Android) and `GoogleService-Info.plist` (iOS) and follow FlutterFire setup:
 	https://firebase.flutter.dev/docs/overview
 
+## Repository & Issue Management
+
+If you'd like to automatically create a GitHub repo and push the code, use the included script (requires `gh` CLI and `git` configured and authenticated):
+
+```bash
+./scripts/create_repo_and_push.sh <owner/repo> --public
+# Example: ./scripts/create_repo_and_push.sh rlyons/price-ghost --public
+```
+
+After repo is created, you can create GitHub feature issues directly from the repo by running the following script; it uses the GH CLI to create issues from `.github/issues/*.md` files:
+
+```bash
+./scripts/create_github_issues.sh
+```
+
+These scripts are a convenience to quickly create issues and push the project notes to GitHub. If you don't have `gh`, install it or create issues manually via the GitHub UI.
+
 ## Local testing
 
 ```bash
