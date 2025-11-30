@@ -42,20 +42,11 @@ flutter pub get
 
 ## Repository & Issue Management
 
-If you'd like to automatically create a GitHub repo and push the code, use the included script (requires `gh` CLI and `git` configured and authenticated):
+If you created the repo using the included scripts, those helper scripts have been removed from the repository to keep the history and tree tidy.
 
-```bash
-./scripts/create_repo_and_push.sh <owner/repo> --public
-# Example: ./scripts/create_repo_and_push.sh rlyons/price-ghost --public
-```
-
-After repo is created, you can create GitHub feature issues directly from the repo by running the following script; it uses the GH CLI to create issues from `.github/issues/*.md` files:
-
-```bash
-./scripts/create_github_issues.sh
-```
-
-These scripts are a convenience to quickly create issues and push the project notes to GitHub. If you don't have `gh`, install it or create issues manually via the GitHub UI.
+If you still want to re-run repo & issue creation:
+- Recreate the `.github/issues/` markdown files and `scripts/create_github_issues.sh` and run them locally with `gh issue create`.
+- Or create issues manually through GitHub's web interface.
 
 ## Local testing
 
