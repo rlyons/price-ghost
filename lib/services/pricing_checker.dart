@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'services/watchlist_service.dart';
-import 'services/keepa_service.dart';
-import 'services/notification_service.dart';
+import 'watchlist_service.dart';
+import 'keepa_service.dart';
+import 'notification_service.dart';
 
 class PricingChecker {
   final WatchlistService watchlistService;

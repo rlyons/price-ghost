@@ -1,12 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-import '../providers/keepa_provider.dart';
 import '../providers/product_provider.dart';
 import 'watchlist_screen.dart';
 import '../screens/product_detail_screen.dart';
@@ -50,14 +47,11 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
           Expanded(
             child: Stack(
               children: [
-                  MobileScanner(
+                MobileScanner(
                   controller: _cameraController,
                   fit: BoxFit.cover,
-                  onDetect: (capture) async {
+                  onDetect: (Barcode barcode, MobileScannerArguments? args) async {
                     if (_processing) return;
-                    final List<Barcode> barcodes = capture.barcodes;
-                    if (barcodes.isEmpty) return;
-                    final barcode = barcodes.first;
                     final code = barcode.rawValue;
                     if (code == null) return;
                     setState(() {
@@ -77,13 +71,15 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                     HapticFeedback.mediumImpact();
 
                     try {
-                      final productAsync = ref.read(productFutureProvider(code).future);
-                      final product = await productAsync;
+                      final product = await ref.read(productFutureProvider(code).future);
                       if (!mounted) return;
-                      await Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)));
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)),
+                      );
                     } catch (e) {
-                      // ignore errors for now — could show a snackbar
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Lookup failed: $e')));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Lookup failed: $e')),
+                      );
                     } finally {
                       setState(() {
                         _processing = false;
@@ -94,11 +90,6 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                           _torchOn = false;
                         });
                       }
-                    }
-                  },
-                  onPermissionSet: (ctrl, permission) {
-                    if (!permission) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Camera permission not granted.')));
                     }
                   },
                 ),
@@ -157,7 +148,6 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                 if (kDebugMode)
                   ElevatedButton(
                     onPressed: () async {
-                      // Simulate a barcode scan
                       const code = '0123456789012';
                       setState(() {
                         _latestBarcode = code;
@@ -166,9 +156,13 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                       try {
                         final product = await ref.read(productFutureProvider(code).future);
                         if (!mounted) return;
-                        await Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)));
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)),
+                        );
                       } catch (_) {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Lookup failed')));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Lookup failed')),
+                        );
                       } finally {
                         setState(() {
                           _processing = false;
@@ -186,19 +180,10 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                         leading: const Icon(Icons.qr_code),
                         title: Text('Scanned: $_latestBarcode'),
                         subtitle: const Text('Tap to view details'),
-                        onTap: () async {
-                        final code = _latestBarcode!;
-                        setState(() => _processing = true);
-                        try {
-                          final product = await ref.read(productFutureProvider(code).future);
-                          if (!mounted) return;
-                          await Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)));
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Lookup failed: $e')));
-                        } finally {
-                          setState(() => _processing = false);
-                        }
-                      },
+                        onTap: () {
+                          // TODO: implement
+                        },
+                      ),
                     ),
                   ),
               ],

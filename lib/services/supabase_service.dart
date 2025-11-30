@@ -13,32 +13,28 @@ class SupabaseService {
   }
 
   Future<void> addWatch(String ean, {String? userId}) async {
-    final res = await _client.from('watches').insert({
+    await _client.from('watches').insert({
       'ean': ean,
       'user_id': userId,
       'created_at': DateTime.now().toIso8601String(),
-    }).execute();
-    if (res.error != null) {
-      throw Exception('Supabase addWatch failed: ${res.error!.message}');
-    }
+    });
   }
 
   Future<void> removeWatch(String ean, {String? userId}) async {
     var query = _client.from('watches').delete();
     query = query.eq('ean', ean);
     if (userId != null) query = query.eq('user_id', userId);
-    final res = await query.execute();
-    if (res.error != null) {
-      throw Exception('Supabase removeWatch failed: ${res.error!.message}');
-    }
+    await query;
   }
 
   Future<List<String>> fetchWatchlist({String? userId}) async {
-    var query = _client.from('watches').select('ean');
-    if (userId != null) query = query.eq('user_id', userId);
-    final res = await query.execute();
-    if (res.error != null) return [];
-    final data = res.data as List<dynamic>? ?? [];
-    return data.map((e) => e['ean'] as String).toList();
+    try {
+      var query = _client.from('watches').select('ean');
+      if (userId != null) query = query.eq('user_id', userId);
+      final data = await query;
+      return (data as List<dynamic>).map((e) => e['ean'] as String).toList();
+    } catch (e) {
+      return [];
+    }
   }
 }
