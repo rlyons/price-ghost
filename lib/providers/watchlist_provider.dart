@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_state_notifier/flutter_state_notifier.dart';
+import 'package:state_notifier/state_notifier.dart';
 import '../services/watchlist_service.dart';
 import 'supabase_provider.dart';
 
@@ -9,7 +9,7 @@ final watchlistServiceProvider = Provider<WatchlistService>((ref) {
   return WatchlistService(supabaseService: supabase);
 });
 
-final watchlistProvider = StateNotifierProvider<WatchlistNotifier, List<String>>(create: (ref) {
+final watchlistProvider = StateNotifierProvider<WatchlistNotifier, List<String>>((ref) {
   final service = ref.read(watchlistServiceProvider);
   return WatchlistNotifier(service);
 });

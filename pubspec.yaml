@@ -9,7 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  flutter_riverpod: ^3.0.0
+  flutter_riverpod: ^2.6.1
   mobile_scanner: ^2.0.0
   http: ^1.0.0
   fl_chart: ^0.55.0
@@ -22,6 +22,7 @@ dependencies:
   flutter_local_notifications: ^13.0.0
   flutter_dotenv: ^5.2.1
   flutter_state_notifier: ^1.0.0
+  state_notifier: ^1.0.0
 
 dev_dependencies:
   flutter_test:

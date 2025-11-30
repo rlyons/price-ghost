@@ -190,7 +190,6 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                         } finally {
                           setState(() => _processing = false);
                         }
-                      },
                   ),
               ],
             ),
