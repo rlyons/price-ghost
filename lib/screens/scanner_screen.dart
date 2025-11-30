@@ -90,6 +90,16 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                     ],
                   ),
                 ),
+                // Scan area rectangle
+                Center(
+                  child: Container(
+                    width: 260,
+                    height: 180,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.white54, width: 2)),
+                  ),
+                ),
               ],
             ),
           ),
@@ -128,6 +138,19 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                       leading: const Icon(Icons.qr_code),
                       title: Text('Scanned: $_latestBarcode'),
                       subtitle: const Text('Tap to view details'),
+                      onTap: () async {
+                        final code = _latestBarcode!;
+                        setState(() => _processing = true);
+                        try {
+                          final product = await ref.read(productFutureProvider(code).future);
+                          if (!mounted) return;
+                          await Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)));
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Lookup failed: $e')));
+                        } finally {
+                          setState(() => _processing = false);
+                        }
+                      },
                     ),
                   ),
               ],
