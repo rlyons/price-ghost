@@ -30,7 +30,7 @@ class PriceChart extends StatelessWidget {
           )
         ],
         titlesData: const FlTitlesData(show: false),
-        borderData: const FlBorderData(show: false),
+        borderData: FlBorderData(show: false),
       ),
     );
   }
