@@ -8,6 +8,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../providers/keepa_provider.dart';
 import '../providers/product_provider.dart';
+import 'watchlist_screen.dart';
 import '../screens/product_detail_screen.dart';
 
 class ScannerScreen extends ConsumerStatefulWidget {
@@ -31,7 +32,15 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Price Ghost')),
+      appBar: AppBar(
+        title: const Text('Price Ghost'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.list_alt),
+            onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const WatchlistScreen())),
+          )
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
