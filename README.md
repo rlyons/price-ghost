@@ -18,7 +18,16 @@ flutter pub get
 flutter run
 ```
 
-3. GitHub repository initialization (use the GitHub CLI):
+3. Provide API keys & GitHub repository initialization
+
+API key:
+- Add NAMES: use `flutter_dotenv` or `--dart-define` to provide your `KEEPA_API_KEY` securely. Example (local run):
+	```bash
+	export KEEPA_API_KEY="your_keepa_key_here"
+	flutter run --dart-define=KEEPA_API_KEY=$KEEPA_API_KEY
+	```
+
+GitHub repo initialization (use the GitHub CLI):
 
 ```bash
 cd price-ghost
