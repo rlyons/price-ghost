@@ -5,6 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'screens/scanner_screen.dart';
 import 'services/notification_service.dart';
 import 'services/supabase_service.dart';
+import 'services/pricing_checker.dart';
+import 'services/watchlist_service.dart';
+import 'services/keepa_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +17,12 @@ Future<void> main() async {
     await notifier.init();
     final supabase = SupabaseService();
     await supabase.init();
+    // Start a simple periodic in-app pricing checker for watchers if desired
+    final watchlistService = WatchlistService();
+    final keepa = KeepaService(apiKey: String.fromEnvironment('KEEPA_API_KEY', defaultValue: 'PLACEHOLDER'));
+    final checker = PricingChecker(watchlistService: watchlistService, keepaService: keepa, notificationService: notifier);
+    // For development, poll every 24 hours. In production, use server-side or background scheduler.
+    checker.startPolling(interval: const Duration(hours: 24));
   }
   runApp(const ProviderScope(child: PriceGhostApp()));
 }
