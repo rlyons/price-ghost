@@ -9,8 +9,9 @@ class ProductDetailScreen extends ConsumerWidget {
   const ProductDetailScreen({super.key, required this.product});
 
   @override
-  Widget build(BuildContext context) {
-    final signal = KeepaService(apiKey: 'PLACEHOLDER').predictBuySignal(product.prices90, product.currentPrice);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final keepa = ref.read(keepaServiceProvider);
+    final signal = keepa.predictBuySignal(product.prices90, product.currentPrice);
 
     return Scaffold(
       appBar: AppBar(title: Text(product.title)),
