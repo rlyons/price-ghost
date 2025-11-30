@@ -27,7 +27,7 @@ jobs:
       - name: Run integration tests
         run: flutter test test/app_flow_integration_test.dart
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           file: ./coverage/lcov.info
           flags: unittests
@@ -43,7 +43,7 @@ jobs:
           ls -lh build/app/outputs/flutter-apk/app-release.apk
           du -sh build/app/outputs/flutter-apk/app-release.apk
       - name: Upload Android APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: android-apk
           path: build/app/outputs/flutter-apk/app-release.apk
