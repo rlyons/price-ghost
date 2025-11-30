@@ -16,7 +16,7 @@ Future<void> main() async {
     await notifier.init();
     // Start a simple periodic in-app pricing checker for watchers if desired
     final watchlistService = WatchlistService();
-    final keepa = KeepaService(apiKey: String.fromEnvironment('KEEPA_API_KEY', defaultValue: 'PLACEHOLDER'));
+    final keepa = KeepaService();
     final checker = PricingChecker(watchlistService: watchlistService, keepaService: keepa, notificationService: notifier);
     // For development, poll every 24 hours. In production, use server-side or background scheduler.
     checker.startPolling(interval: const Duration(hours: 24));

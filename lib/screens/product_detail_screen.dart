@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../services/keepa_service.dart';
+import '../models/product_info.dart';
 import '../widgets/price_chart.dart';
 import '../widgets/glass_card.dart';
 import '../providers/watchlist_provider.dart';
