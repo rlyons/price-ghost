@@ -1,7 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/watchlist_service.dart';
+import 'supabase_provider.dart';
 
-final watchlistServiceProvider = Provider<WatchlistService>((ref) => WatchlistService());
+final watchlistServiceProvider = Provider<WatchlistService>((ref) {
+  final supabaseAsync = ref.watch(supabaseServiceProvider);
+  final supabase = supabaseAsync.maybeWhen(data: (s) => s, orElse: () => null);
+  return WatchlistService(supabaseService: supabase);
+});
 
 final watchlistProvider = StateNotifierProvider<WatchlistNotifier, List<String>>((ref) {
   final service = ref.read(watchlistServiceProvider);
