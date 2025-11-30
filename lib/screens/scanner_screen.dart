@@ -129,6 +129,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                   ),
                 ),
                 // scanning brackets
+                // ignore: prefer_const_constructors
                 Center(child: ScanBrackets()),
                 // Scan area rectangle
                 const Center(
