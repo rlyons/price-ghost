@@ -77,6 +77,11 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                       });
                     }
                   },
+                  onPermissionSet: (ctrl, permission) {
+                    if (!permission) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Camera permission not granted.')));
+                    }
+                  },
                 ),
                 // Overlay UI
                 Positioned(
