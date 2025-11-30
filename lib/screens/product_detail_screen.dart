@@ -26,7 +26,7 @@ class ProductDetailScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(product.title, style: Theme.of(context).textTheme.headline6),
+                  Text(product.title, style: Theme.of(context).textTheme.headlineMedium),
                   const SizedBox(height: 4),
                   Text('EAN: ${product.ean}', style: const TextStyle(color: Colors.grey)),
                   const SizedBox(height: 8),

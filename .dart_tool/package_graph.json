@@ -15,6 +15,7 @@
         "flutter_dotenv",
         "flutter_local_notifications",
         "flutter_riverpod",
+        "flutter_state_notifier",
         "glassmorphism",
         "http",
         "mobile_scanner",
@@ -97,6 +98,16 @@
         "stream_channel",
         "test_api",
         "vector_math"
+      ]
+    },
+    {
+      "name": "flutter_state_notifier",
+      "version": "1.0.0",
+      "dependencies": [
+        "flutter",
+        "meta",
+        "provider",
+        "state_notifier"
       ]
     },
     {
@@ -212,12 +223,11 @@
     },
     {
       "name": "mobile_scanner",
-      "version": "5.2.3",
+      "version": "2.1.0",
       "dependencies": [
         "flutter",
         "flutter_web_plugins",
-        "plugin_platform_interface",
-        "web"
+        "js"
       ]
     },
     {
@@ -600,6 +610,13 @@
       ]
     },
     {
+      "name": "state_notifier",
+      "version": "1.0.0",
+      "dependencies": [
+        "meta"
+      ]
+    },
+    {
       "name": "timezone",
       "version": "0.9.4",
       "dependencies": [
@@ -887,8 +904,8 @@
       ]
     },
     {
-      "name": "plugin_platform_interface",
-      "version": "2.1.8",
+      "name": "js",
+      "version": "0.6.7",
       "dependencies": [
         "meta"
       ]
@@ -898,13 +915,6 @@
       "version": "0.0.0",
       "dependencies": [
         "flutter"
-      ]
-    },
-    {
-      "name": "state_notifier",
-      "version": "1.0.0",
-      "dependencies": [
-        "meta"
       ]
     },
     {
@@ -1030,6 +1040,13 @@
         "meta",
         "path",
         "vm_service"
+      ]
+    },
+    {
+      "name": "plugin_platform_interface",
+      "version": "2.1.8",
+      "dependencies": [
+        "meta"
       ]
     },
     {
@@ -1300,13 +1317,6 @@
       "dependencies": []
     },
     {
-      "name": "js",
-      "version": "0.6.7",
-      "dependencies": [
-        "meta"
-      ]
-    },
-    {
       "name": "webkit_inspection_protocol",
       "version": "1.2.1",
       "dependencies": [
@@ -1420,6 +1430,22 @@
       "dependencies": [
         "args",
         "yaml"
+      ]
+    },
+    {
+      "name": "provider",
+      "version": "6.1.5+1",
+      "dependencies": [
+        "collection",
+        "flutter",
+        "nested"
+      ]
+    },
+    {
+      "name": "nested",
+      "version": "1.0.0",
+      "dependencies": [
+        "flutter"
       ]
     }
   ],

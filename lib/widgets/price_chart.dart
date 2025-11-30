@@ -28,7 +28,7 @@ class PriceChart extends StatelessWidget {
               return FlDotCirclePainter(radius: 3, color: Colors.white);
             }),
             belowBarData: BarAreaData(show: true, gradient: LinearGradient(colors: [Colors.green.withOpacity(0.3), Colors.transparent])),
-            colors: [Colors.greenAccent],
+            gradient: LinearGradient(colors: [Colors.greenAccent]),
             barWidth: 2.0,
           )
         ],

@@ -53,11 +53,8 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                   MobileScanner(
                   controller: _cameraController,
                   fit: BoxFit.cover,
-                  onDetect: (capture) async {
+                  onDetect: (barcode, args) async {
                     if (_processing) return;
-                    final List<Barcode> barcodes = capture.barcodes;
-                    if (barcodes.isEmpty) return;
-                    final barcode = barcodes.first;
                     final code = barcode.rawValue;
                     if (code == null) return;
                     setState(() {
@@ -94,11 +91,6 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                           _torchOn = false;
                         });
                       }
-                    }
-                  },
-                  onPermissionSet: (ctrl, permission) {
-                    if (!permission) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Camera permission not granted.')));
                     }
                   },
                 ),
@@ -199,7 +191,6 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                           setState(() => _processing = false);
                         }
                       },
-                    ),
                   ),
               ],
             ),

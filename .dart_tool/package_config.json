@@ -260,6 +260,12 @@
       "languageVersion": "3.7"
     },
     {
+      "name": "flutter_state_notifier",
+      "rootUri": "file:///Users/rlyons/.pub-cache/hosted/pub.dev/flutter_state_notifier-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_test",
       "rootUri": "file:///usr/local/share/flutter/packages/flutter_test",
       "packageUri": "lib/",
@@ -417,15 +423,21 @@
     },
     {
       "name": "mobile_scanner",
-      "rootUri": "file:///Users/rlyons/.pub-cache/hosted/pub.dev/mobile_scanner-5.2.3",
+      "rootUri": "file:///Users/rlyons/.pub-cache/hosted/pub.dev/mobile_scanner-2.1.0",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "2.17"
     },
     {
       "name": "mockito",
       "rootUri": "file:///Users/rlyons/.pub-cache/hosted/pub.dev/mockito-5.6.1",
       "packageUri": "lib/",
       "languageVersion": "3.7"
+    },
+    {
+      "name": "nested",
+      "rootUri": "file:///Users/rlyons/.pub-cache/hosted/pub.dev/nested-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "node_preamble",
@@ -516,6 +528,12 @@
       "rootUri": "file:///Users/rlyons/.pub-cache/hosted/pub.dev/process-4.2.4",
       "packageUri": "lib/",
       "languageVersion": "2.14"
+    },
+    {
+      "name": "provider",
+      "rootUri": "file:///Users/rlyons/.pub-cache/hosted/pub.dev/provider-6.1.5+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "pub_semver",
