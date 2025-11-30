@@ -14,8 +14,6 @@ class PriceChart extends StatelessWidget {
       spots.add(FlSpot(i.toDouble(), prices[i]));
     }
 
-    final currentIndex = prices.length - 1;
-
     return LineChart(
       LineChartData(
         gridData: const FlGridData(show: false),

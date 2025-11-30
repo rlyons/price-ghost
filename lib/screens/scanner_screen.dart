@@ -77,9 +77,11 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                         MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)),
                       );
                     } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Lookup failed: $e')),
-                      );
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Lookup failed: $e')),
+                        );
+                      }
                     } finally {
                       setState(() {
                         _processing = false;
@@ -127,7 +129,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                   ),
                 ),
                 // scanning brackets
-                Center(child: const ScanBrackets()),
+                Center(child: ScanBrackets()),
                 // Scan area rectangle
                 Center(
                   child: Container(
@@ -160,9 +162,11 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                           MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)),
                         );
                       } catch (_) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Lookup failed')),
-                        );
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Lookup failed')),
+                          );
+                        }
                       } finally {
                         setState(() {
                           _processing = false;

@@ -51,8 +51,11 @@ class ProductDetailScreen extends ConsumerWidget {
                 return ElevatedButton(
                   onPressed: () async {
                     final notifier = ref.read(watchlistProvider.notifier);
-                    if (isWatching) await notifier.remove(product.ean);
-                    else await notifier.add(product.ean);
+                    if (isWatching) {
+                      await notifier.remove(product.ean);
+                    } else {
+                      await notifier.add(product.ean);
+                    }
                   },
                   child: Text(isWatching ? 'Remove Watch' : 'Add to Watchlist'),
                 );
