@@ -5,7 +5,6 @@ import 'package:price_ghost/models/product_info.dart';
 import 'package:price_ghost/services/keepa_service.dart';
 import 'package:price_ghost/services/fallback_service.dart';
 import 'package:price_ghost/providers/watchlist_provider.dart';
-import 'package:price_ghost/providers/keepa_provider.dart';
 import 'mocks/mock_product_lookup_service.dart';
 
 void main() {
