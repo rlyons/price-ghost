@@ -15,5 +15,7 @@ jobs:
         run: flutter pub get
       - name: Run tests
         run: flutter test --coverage
+      - name: Run integration tests
+        run: flutter test test/app_flow_integration_test.dart
       - name: Analyze code
         run: flutter analyze
