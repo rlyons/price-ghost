@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/supabase_service.dart';
 
-const supabaseServiceProvider = FutureProvider<SupabaseService?>((ref) async {
+final supabaseServiceProvider = FutureProvider<SupabaseService?>((ref) async {
   const url = String.fromEnvironment('SUPABASE_URL', defaultValue: '');
   const key = String.fromEnvironment('SUPABASE_KEY', defaultValue: '');
   if (url.isEmpty || key.isEmpty) return null;
