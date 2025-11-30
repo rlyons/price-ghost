@@ -97,7 +97,7 @@ class KeepaService {
     try {
       return await _fallbackService.lookup(ean);
     } catch (e) {
-      print('Fallback service lookup failed: $e');
+      // Fallback service lookup failed: $e
       return null;
     }
   }
@@ -112,7 +112,7 @@ class KeepaService {
   Future<void> _applyRateLimiting() async {
     const minIntervalMs = 100; // Minimum 100ms between requests
     final timeSinceLastRequest = DateTime.now().difference(_lastRequestTime);
-    final waitTime = Duration(milliseconds: minIntervalMs) - timeSinceLastRequest;
+    final waitTime = const Duration(milliseconds: minIntervalMs) - timeSinceLastRequest;
 
     if (waitTime > Duration.zero) {
       await Future.delayed(waitTime);

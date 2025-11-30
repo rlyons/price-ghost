@@ -25,16 +25,16 @@ class FallbackService {
       try {
         final result = await service.lookup(ean);
         if (result != null) {
-          print('Fallback service ${service.serviceName} found product: ${result.title}');
+          // Fallback service ${service.serviceName} found product: ${result.title}
           return result;
         }
       } catch (e) {
-        print('Fallback service ${service.serviceName} failed: $e');
+        // Fallback service ${service.serviceName} failed: $e
         // Continue to next service
       }
     }
 
-    print('All fallback services failed for EAN: $ean');
+    // All fallback services failed for EAN: $ean
     return null;
   }
 

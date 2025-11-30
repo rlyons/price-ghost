@@ -46,7 +46,7 @@ class BarcodeLookupService implements ProductLookupService {
       }
     } catch (e) {
       // Log error but don't throw - fallback services should fail gracefully
-      print('Barcode Lookup failed: $e');
+      // Barcode Lookup failed: $e
     }
 
     return null;

@@ -48,7 +48,7 @@ class UPCitemdbService implements ProductLookupService {
       }
     } catch (e) {
       // Log error but don't throw - fallback services should fail gracefully
-      print('UPCitemdb lookup failed: $e');
+      // UPCitemdb lookup failed: $e
     }
 
     return null;

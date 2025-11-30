@@ -18,22 +18,19 @@ class PriceChart extends StatelessWidget {
 
     return LineChart(
       LineChartData(
-        gridData: FlGridData(show: false),
+        gridData: const FlGridData(show: false),
         lineBarsData: [
           LineChartBarData(
             spots: spots,
             isCurved: true,
-            dotData: FlDotData(show: true, getDotPainter: (spot, __, ___, ____){
-              if (spot.x == currentIndex) return FlDotCirclePainter(radius: 6, color: Colors.green);
-              return FlDotCirclePainter(radius: 3, color: Colors.white);
-            }),
+            dotData: const FlDotData(show: true),
             belowBarData: BarAreaData(show: true, gradient: LinearGradient(colors: [Colors.green.withValues(alpha: 0.3), Colors.transparent])),
-            gradient: LinearGradient(colors: [Colors.greenAccent]),
+            gradient: const LinearGradient(colors: [Colors.greenAccent]),
             barWidth: 2.0,
           )
         ],
-        titlesData: FlTitlesData(show: false),
-        borderData: FlBorderData(show: false),
+        titlesData: const FlTitlesData(show: false),
+        borderData: const FlBorderData(show: false),
       ),
     );
   }
