@@ -50,7 +50,8 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                 MobileScanner(
                   controller: _cameraController,
                   fit: BoxFit.cover,
-                  onDetect: (Barcode barcode, MobileScannerArguments? args) async {
+                  onDetect: (BarcodeCapture capture) async {
+                    final barcode = capture.barcodes.first;
                     if (_processing) return;
                     final code = barcode.rawValue;
                     if (code == null) return;
