@@ -3,36 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:price_ghost/services/keepa_service.dart';
 import 'package:price_ghost/services/keepa_cache.dart';
 import 'package:price_ghost/services/fallback_service.dart';
-import 'package:price_ghost/services/product_lookup_service.dart';
 import 'package:price_ghost/models/product_info.dart';
-
-/// Mock ProductLookupService for testing fallback behavior
-class MockProductLookupService implements ProductLookupService {
-  final String _serviceName;
-  final bool _isAvailable;
-  final ProductInfo? Function(String)? _lookupResult;
-  int lookupCallCount = 0;
-
-  MockProductLookupService({
-    required String serviceName,
-    bool isAvailable = true,
-    ProductInfo? Function(String)? lookupResult,
-  })  : _serviceName = serviceName,
-        _isAvailable = isAvailable,
-        _lookupResult = lookupResult;
-
-  @override
-  String get serviceName => _serviceName;
-
-  @override
-  bool get isAvailable => _isAvailable;
-
-  @override
-  Future<ProductInfo?> lookup(String ean) async {
-    lookupCallCount++;
-    return _lookupResult?.call(ean);
-  }
-}
+import 'mocks/mock_product_lookup_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
