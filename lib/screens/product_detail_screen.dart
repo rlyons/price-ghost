@@ -21,6 +21,8 @@ class ProductDetailScreen extends ConsumerWidget {
           children: [
             Text(product.title, style: Theme.of(context).textTheme.headline6),
             const SizedBox(height: 8),
+            Text('EAN: ${product.ean}', style: const TextStyle(color: Colors.grey)),
+            const SizedBox(height: 8),
             Text('Current: \$${product.currentPrice.toStringAsFixed(2)}', style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 8),
             Row(children: [
