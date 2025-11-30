@@ -1,6 +1,9 @@
-name: Flutter CI
+name: Flutter CI/CD
 
 on: [push, pull_request]
+
+# Note: iOS builds require macOS runners and certificates
+# Add a separate job with runs-on: macos-latest for iOS builds when needed
 
 jobs:
   build:
@@ -11,11 +14,36 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.29.0'
+      - name: Check Flutter environment
+        run: |
+          flutter --version
+          flutter doctor -v
       - name: Install dependencies
         run: flutter pub get
+      - name: Check for outdated dependencies
+        run: flutter pub outdated
       - name: Run tests
         run: flutter test --coverage
       - name: Run integration tests
         run: flutter test test/app_flow_integration_test.dart
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
       - name: Analyze code
         run: flutter analyze
+      - name: Build Android APK
+        run: |
+          flutter build apk --release
+      - name: Analyze bundle size
+        run: |
+          echo "APK Size Analysis:"
+          ls -lh build/app/outputs/flutter-apk/app-release.apk
+          du -sh build/app/outputs/flutter-apk/app-release.apk
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
