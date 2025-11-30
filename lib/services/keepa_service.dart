@@ -1,82 +1,172 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
-
-class ProductInfo {
-  final String ean;
-  final String title;
-  final double currentPrice;
-  final List<double> prices90;
-  final double allTimeLow;
-
-  ProductInfo({
-    required this.ean,
-    required this.title,
-    required this.currentPrice,
-    required this.prices90,
-    required this.allTimeLow,
-  });
-}
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../models/product_info.dart';
+import 'keepa_parser.dart';
+import 'keepa_cache.dart';
+import 'fallback_service.dart';
 
 class KeepaService {
-  final String apiKey;
-  final http.Client httpClient;
+  final http.Client? _httpClient;
+  late KeepaCache? _cache;
+  final FallbackService? _fallbackService;
+  int _retryCount = 0;
+  DateTime _lastRequestTime = DateTime.now();
 
-  KeepaService({required this.apiKey, http.Client? httpClient})
-      : httpClient = httpClient ?? http.Client();
+  KeepaService({
+    http.Client? httpClient,
+    KeepaCache? cache,
+    FallbackService? fallbackService,
+  })  : _httpClient = httpClient,
+        _cache = cache,
+        _fallbackService = fallbackService;
 
-  // Placeholder for calling the Keepa API. Replace with real endpoint calls.
   Future<ProductInfo> fetchProductInfo(String ean) async {
-    if (apiKey == 'PLACEHOLDER' || apiKey.isEmpty) {
-      // no API key: return stub data
-      await Future.delayed(const Duration(milliseconds: 250));
-      final List<double> last90 = List.generate(90, (index) => 100.0 + index * 0.2);
-      return ProductInfo(
-        ean: ean,
-        title: 'Demo Product for $ean',
-        currentPrice: last90.last,
-        prices90: last90,
-        allTimeLow: 80.0,
-      );
+    await _ensureCacheInitialized();
+
+    // Check cache first
+    final cached = _cache!.get(ean);
+    if (cached != null) {
+      return _createProductInfo(ean, cached.data);
     }
 
-    // If we have an API key, try to call Keepa's product endpoint (simplified).
-    // Keepa needs an ASIN or EAN with the right parameters; you may need to adapt this
-    // depending on your account's usage. This is a best-effort example.
-    final uri = Uri.parse('https://api.keepa.com/product?key=$apiKey&domain=1&ean=$ean');
-    final response = await httpClient.get(uri);
-    if (response.statusCode != 200) {
-      throw Exception('Keepa fetch failed: ${response.statusCode}');
-    }
-
-    final Map<String, dynamic> data = jsonDecode(response.body);
-    // Parse the Keepa response into a ProductInfo instance. Keepa's response format is complex,
-    // so here we attempt to read a simple structure; adapt to exact response fields.
-    // FALLBACK: use demo data if parsing fails.
+    String? key;
     try {
-      final title = (data['products']?[0]?['title']) ?? 'Unknown Product $ean';
-      // Keepa returns price data in cents or raw arrays; map them to doubles.
-      // This simplified mapping will use placeholder conversions.
-      final prices90 = <double>[];
-      // If keepa returns price history array, transform it; otherwise generate synthetic.
-      if (data['products']?[0]?['priceHistory'] != null) {
-        // example placeholder
-        prices90.addAll(List<double>.generate(90, (i) => 100.0 + i * 0.2));
-      } else {
-        prices90.addAll(List<double>.generate(90, (i) => 100.0 + i * 0.2));
-      }
-      final current = prices90.isNotEmpty ? prices90.last : 100.0;
-      final low = prices90.reduce((a, b) => a < b ? a : b);
-      return ProductInfo(ean: ean, title: title, currentPrice: current, prices90: prices90, allTimeLow: low);
-    } catch (_) {
-      final List<double> last90 = List.generate(90, (index) => 100.0 + index * 0.2);
-      return ProductInfo(ean: ean, title: 'Demo Product for $ean', currentPrice: last90.last, prices90: last90, allTimeLow: 80.0);
+      key = dotenv.env['KEEPA_API_KEY'];
+    } catch (e) {
+      key = null;
     }
+    if (key == null || key == 'PLACEHOLDER' || key.isEmpty) {
+      // Try fallback services if available
+      final fallbackResult = await _tryFallbackServices(ean);
+      if (fallbackResult != null) return fallbackResult;
+
+      // Fallback to demo data
+      await Future.delayed(const Duration(milliseconds: 250));
+      return _createDemoProductInfo(ean);
+    }
+
+    // Rate limiting and exponential backoff
+    await _applyRateLimiting();
+
+    try {
+      final response = await _makeRequest(key, ean);
+      final keepaResponse = KeepaResponse.fromJson(jsonDecode(response.body));
+      final parsedData = KeepaParser.parseProductData(keepaResponse);
+
+      if (parsedData != null) {
+        // Cache successful response
+        await _cache!.set(ean, parsedData);
+        _retryCount = 0; // Reset retry count on success
+        return _createProductInfo(ean, parsedData);
+      } else {
+        // Try fallback services if Keepa parsing failed
+        final fallbackResult = await _tryFallbackServices(ean);
+        if (fallbackResult != null) return fallbackResult;
+
+        throw Exception('No valid product data in response');
+      }
+    } catch (e) {
+      // Handle rate limiting with exponential backoff
+      if (e.toString().contains('429') || e.toString().contains('Rate limited')) {
+        await _handleRateLimit();
+        // Retry once after backoff
+        if (_retryCount < 1) {
+          _retryCount++;
+          return fetchProductInfo(ean);
+        }
+      }
+
+      // Try fallback services on any error
+      final fallbackResult = await _tryFallbackServices(ean);
+      if (fallbackResult != null) return fallbackResult;
+
+      // Fallback to demo data on any error
+      _retryCount = 0; // Reset retry count on other errors
+      return _createDemoProductInfo(ean);
+    }
+  }
+
+  Future<ProductInfo?> _tryFallbackServices(String ean) async {
+    if (_fallbackService == null || !_fallbackService.hasAvailableServices) {
+      return null;
+    }
+
+    try {
+      return await _fallbackService.lookup(ean);
+    } catch (e) {
+      print('Fallback service lookup failed: $e');
+      return null;
+    }
+  }
+
+  Future<void> _ensureCacheInitialized() async {
+    if (_cache == null) {
+      final prefs = await SharedPreferences.getInstance();
+      _cache ??= KeepaCache(prefs);
+    }
+  }
+
+  Future<void> _applyRateLimiting() async {
+    const minIntervalMs = 100; // Minimum 100ms between requests
+    final timeSinceLastRequest = DateTime.now().difference(_lastRequestTime);
+    final waitTime = Duration(milliseconds: minIntervalMs) - timeSinceLastRequest;
+
+    if (waitTime > Duration.zero) {
+      await Future.delayed(waitTime);
+    }
+    _lastRequestTime = DateTime.now();
+  }
+
+  Future<void> _handleRateLimit() async {
+    // Exponential backoff: wait 2^retryCount seconds
+    final backoffSeconds = pow(2, _retryCount).toInt();
+    await Future.delayed(Duration(seconds: backoffSeconds));
+  }
+
+  Future<http.Response> _makeRequest(String key, String ean) async {
+    final url = Uri.parse('https://api.keepa.com/product')
+        .replace(queryParameters: {
+      'key': key,
+      'domain': '1', // US marketplace
+      'ean': ean,
+      'stats': '90', // Get 90 days of data
+    });
+
+    final response = await (_httpClient ?? http.Client()).get(url);
+    if (response.statusCode != 200) {
+      throw Exception('Keepa API request failed: ${response.statusCode}');
+    }
+    return response;
+  }
+
+  ProductInfo _createProductInfo(String ean, ParsedProductData data) {
+    return ProductInfo(
+      ean: ean,
+      title: data.title,
+      currentPrice: data.currentPrice,
+      prices90: data.prices90,
+      allTimeLow: data.allTimeLow,
+    );
+  }
+
+  ProductInfo _createDemoProductInfo(String ean) {
+    final prices90 = List<double>.generate(90, (i) => 100.0 + i * 0.2);
+    return ProductInfo(
+      ean: ean,
+      title: 'Demo Product for $ean',
+      currentPrice: prices90.last,
+      prices90: prices90,
+      allTimeLow: 80.0,
+    );
   }
 
   // Simple prediction algorithm
   String predictBuySignal(List<double> prices, double currentPrice) {
     if (prices.isEmpty) return 'NEVER';
-    final double avg30 = _average(prices.sublist(prices.length - 30));
+    final double avg30 = _average(prices.sublist(max(0, prices.length - 30)));
     if (currentPrice < avg30 * 0.9) return 'BUY NOW';
     if (currentPrice > avg30 * 1.1) return 'NEVER';
     return 'WAIT';

@@ -1,6 +1,7 @@
 build/
 .flutter-plugins
 .flutter-plugins-deps
+.flutter-plugins-dependencies
 .packages
 .pub
 .pub-cache
@@ -10,3 +11,4 @@ build/
 .env
 android/**/local.properties
 **/pubspec.lock
+.dart_tool/
