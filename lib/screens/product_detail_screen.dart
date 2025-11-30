@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/keepa_service.dart';
 import '../widgets/price_chart.dart';
+import '../widgets/glass_card.dart';
 import '../providers/watchlist_provider.dart';
+import '../providers/keepa_provider.dart';
 
 class ProductDetailScreen extends ConsumerWidget {
   final ProductInfo product;
@@ -20,11 +22,19 @@ class ProductDetailScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(product.title, style: Theme.of(context).textTheme.headline6),
+            GlassCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(product.title, style: Theme.of(context).textTheme.headline6),
+                  const SizedBox(height: 4),
+                  Text('EAN: ${product.ean}', style: const TextStyle(color: Colors.grey)),
+                  const SizedBox(height: 8),
+                  Text('Current: \$${product.currentPrice.toStringAsFixed(2)}', style: const TextStyle(fontSize: 18)),
+                ],
+              ),
+            ),
             const SizedBox(height: 8),
-            Text('EAN: ${product.ean}', style: const TextStyle(color: Colors.grey)),
-            const SizedBox(height: 8),
-            Text('Current: \$${product.currentPrice.toStringAsFixed(2)}', style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 8),
             Row(children: [
               Chip(label: Text(signal)),

@@ -1,55 +1,61 @@
 # Price Ghost
 
-A cross-platform Flutter app (iOS + Android) prototype for scanning barcodes to fetch price history and set watch alerts.
+Price Ghost is a cross-platform Flutter prototype that scans product barcodes and looks up price history and price-change alerts.
+
+## Features
+- Barcode scanning (mobile_scanner)
+- Price history chart (Keepa integration or demo fallback)
+- Watchlist (local or Supabase-backed)
+- Push notifications (Firebase Messaging + local notifications) - placeholder
+- Modern UI elements (glassmorphism card, animated scan brackets)
 
 ## Setup
 
-1. Ensure Flutter 3.24+ and Dart 3.5 are installed and configured:
+1. Install Flutter 3.24+ and Dart 3.5
 
 ```bash
 flutter --version
 ```
 
-2. Install dependencies and run the app:
+2. Clone the repo and install dependencies
 
 ```bash
 cd price-ghost
 flutter pub get
-flutter run
 ```
 
+3. Provide API keys and run the app
 
-API key:
-- Add NAMES: use `flutter_dotenv` or `--dart-define` to provide your `KEEPA_API_KEY` securely. Example (local run):
+- Keepa API (optional, for real price data):
 	```bash
-Developer tips:
-- The scanner uses `mobile_scanner`. In debug mode the "Simulate Scan" button is visible to quickly test the product lookup flow.
-- To provide your Keepa API key at runtime use `--dart-define`: `flutter run --dart-define=KEEPA_API_KEY=YOUR_KEY`.
-	export KEEPA_API_KEY="your_keepa_key_here"
+	export KEEPA_API_KEY="your_keepa_key"
 	flutter run --dart-define=KEEPA_API_KEY=$KEEPA_API_KEY
 	```
+- Supabase (optional, for server-side watchlist & persistence):
+	```bash
+	export SUPABASE_URL="https://xyzcompany.supabase.co"
+	export SUPABASE_KEY="public-anon-key"
+	flutter run --dart-define=SUPABASE_URL=$SUPABASE_URL --dart-define=SUPABASE_KEY=$SUPABASE_KEY
+	```
+- Note: For Firebase Messaging, add `google-services.json` (Android) and `GoogleService-Info.plist` (iOS) and follow FlutterFire setup:
+	https://firebase.flutter.dev/docs/overview
 
-GitHub repo initialization (use the GitHub CLI):
-
-```bash
-cd price-ghost
-git init
-git add .
-git commit -m "Initial commit: Price Ghost Flutter app skeleton"
-# Create public repo and push
-gh repo create price-ghost --public --source=. --remote=origin --push
-```
-
-## Notes
-- Keepa API key placeholder is in `lib/services/keepa_service.dart`. Replace it with a real key and store keys securely using environment variables or `flutter_dotenv` and not in code.
-- This skeleton includes a placeholder scanner screen that simulates barcode scans.
-- Run tests:
+## Local testing
 
 ```bash
 flutter test
+flutter analyze
 ```
 
-## Next steps
-- Implement full scanner integration (mobile_scanner) and live camera feed
-- Implement Keepa API integration
-- Add Supabase watchlist logic and Firebase messaging for push notifications
+## How it works
+- The scanner screen uses `mobile_scanner` to detect barcodes and triggers Keepa lookups via a `KeepaService` provider.
+- A `WatchlistService` persists local watchlist entries to `shared_preferences`. If configured, Supabase can store/retrieve watchlist entries.
+- `NotificationService` uses Firebase Messaging and local notifications to show alerts (foreground and background handlers are placeholders and need proper cloud scheduling for reliable push notifications).
+
+## Notes & Next Steps
+- Keepa is optional. If you don't have a key, the demo fallback provides synthetic price data.
+- To enable Supabase, create a `watches` table with columns: `ean` (text), `user_id` (text, optional), and `created_at` (timestamp).
+- For production: implement server-side background checks, proper API call parsing for Keepa, rate limit handling, and secure key storage.
+
+## Contributing
+Contributions welcome—create a pull request for features, improvements, or bug fixes.

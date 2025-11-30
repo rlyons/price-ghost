@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 
 import 'screens/scanner_screen.dart';
 import 'services/notification_service.dart';
-import 'services/supabase_service.dart';
 import 'services/pricing_checker.dart';
 import 'services/watchlist_service.dart';
 import 'services/keepa_service.dart';
@@ -12,11 +11,9 @@ import 'services/keepa_service.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (kIsWeb == false) {
-    // Initialize notifications / supabase here if configured
+    // Initialize notifications here; Supabase is initialized via provider if configured
     final notifier = NotificationService();
     await notifier.init();
-    final supabase = SupabaseService();
-    await supabase.init();
     // Start a simple periodic in-app pricing checker for watchers if desired
     final watchlistService = WatchlistService();
     final keepa = KeepaService(apiKey: String.fromEnvironment('KEEPA_API_KEY', defaultValue: 'PLACEHOLDER'));

@@ -10,6 +10,8 @@ import '../providers/keepa_provider.dart';
 import '../providers/product_provider.dart';
 import 'watchlist_screen.dart';
 import '../screens/product_detail_screen.dart';
+import '../widgets/scan_brackets.dart';
+import '../widgets/glass_card.dart';
 
 class ScannerScreen extends ConsumerStatefulWidget {
   const ScannerScreen({super.key});
@@ -22,6 +24,8 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
   String? _latestBarcode;
   late final MobileScannerController _cameraController;
   bool _processing = false;
+  bool _autoFlash = false;
+  bool _torchOn = false;
 
   @override
   void initState() {
@@ -46,7 +50,7 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
           Expanded(
             child: Stack(
               children: [
-                MobileScanner(
+                  MobileScanner(
                   controller: _cameraController,
                   fit: BoxFit.cover,
                   onDetect: (capture) async {
@@ -60,6 +64,15 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                       _processing = true;
                       _latestBarcode = code;
                     });
+                    // If auto flash enabled, try to enable torch while processing
+                    bool turnedOnForScan = false;
+                    if (_autoFlash && !_torchOn) {
+                      await _cameraController.toggleTorch();
+                      turnedOnForScan = true;
+                      setState(() {
+                        _torchOn = true;
+                      });
+                    }
 
                     HapticFeedback.mediumImpact();
 
@@ -75,6 +88,12 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                       setState(() {
                         _processing = false;
                       });
+                      if (turnedOnForScan) {
+                        await _cameraController.toggleTorch();
+                        setState(() {
+                          _torchOn = false;
+                        });
+                      }
                     }
                   },
                   onPermissionSet: (ctrl, permission) {
@@ -91,10 +110,22 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
-                        color: Colors.white,
-                        icon: const Icon(Icons.flash_on),
-                        onPressed: () => _cameraController.toggleTorch(),
+                      Row(
+                        children: [
+                          IconButton(
+                            color: Colors.white,
+                            icon: Icon(_torchOn ? Icons.flash_on : Icons.flash_off),
+                            onPressed: () async {
+                              await _cameraController.toggleTorch();
+                              setState(() => _torchOn = !_torchOn);
+                            },
+                          ),
+                          IconButton(
+                            color: _autoFlash ? Colors.amber : Colors.white,
+                            icon: const Icon(Icons.flash_auto),
+                            onPressed: () => setState(() => _autoFlash = !_autoFlash),
+                          ),
+                        ],
                       ),
                       IconButton(
                         color: Colors.white,
@@ -104,6 +135,8 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                     ],
                   ),
                 ),
+                // scanning brackets
+                Center(child: const ScanBrackets()),
                 // Scan area rectangle
                 Center(
                   child: Container(
@@ -146,13 +179,14 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                   ),
                 const SizedBox(height: 12.0),
                 if (_latestBarcode != null)
-                  Card(
-                    elevation: 4,
-                    child: ListTile(
-                      leading: const Icon(Icons.qr_code),
-                      title: Text('Scanned: $_latestBarcode'),
-                      subtitle: const Text('Tap to view details'),
-                      onTap: () async {
+                  Center(
+                    child: GlassCard(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: ListTile(
+                        leading: const Icon(Icons.qr_code),
+                        title: Text('Scanned: $_latestBarcode'),
+                        subtitle: const Text('Tap to view details'),
+                        onTap: () async {
                         final code = _latestBarcode!;
                         setState(() => _processing = true);
                         try {
