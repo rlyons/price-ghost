@@ -8,16 +8,16 @@ final watchlistServiceProvider = Provider<WatchlistService>((ref) {
   return WatchlistService(supabaseService: supabase);
 });
 
-final watchlistProvider = StateNotifierProvider<WatchlistNotifier, List<String>>((ref) {
-  final service = ref.read(watchlistServiceProvider);
-  return WatchlistNotifier(service);
-});
+final watchlistProvider = NotifierProvider<WatchlistNotifier, List<String>>(WatchlistNotifier.new);
 
-class WatchlistNotifier extends StateNotifier<List<String>> {
-  final WatchlistService service;
+class WatchlistNotifier extends Notifier<List<String>> {
+  late final WatchlistService service;
 
-  WatchlistNotifier(this.service) : super([]) {
+  @override
+  List<String> build() {
+    service = ref.read(watchlistServiceProvider);
     _load();
+    return [];
   }
 
   Future<void> _load() async {
