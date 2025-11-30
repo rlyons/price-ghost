@@ -27,7 +27,7 @@ class PriceChart extends StatelessWidget {
               if (spot.x == currentIndex) return FlDotCirclePainter(radius: 6, color: Colors.green);
               return FlDotCirclePainter(radius: 3, color: Colors.white);
             }),
-            belowBarData: BarAreaData(show: true, gradient: LinearGradient(colors: [Colors.green.withOpacity(0.3), Colors.transparent])),
+            belowBarData: BarAreaData(show: true, gradient: LinearGradient(colors: [Colors.green.withValues(alpha: 0.3), Colors.transparent])),
             gradient: LinearGradient(colors: [Colors.greenAccent]),
             barWidth: 2.0,
           )

@@ -13,7 +13,7 @@ class NotificationService {
       if (Platform.isAndroid || Platform.isIOS) {
         await Firebase.initializeApp();
       }
-      final settings = await _fm.requestPermission(alert: true, announcement: false, badge: true, carPlay: false, criticalAlert: false, provisional: false, sound: true);
+      await _fm.requestPermission(alert: true, announcement: false, badge: true, carPlay: false, criticalAlert: false, provisional: false, sound: true);
       // Android setup for local notifications
       const android = AndroidInitializationSettings('@mipmap/ic_launcher');
       const ios = DarwinInitializationSettings();
