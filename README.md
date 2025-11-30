@@ -18,11 +18,13 @@ flutter pub get
 flutter run
 ```
 
-3. Provide API keys & GitHub repository initialization
 
 API key:
 - Add NAMES: use `flutter_dotenv` or `--dart-define` to provide your `KEEPA_API_KEY` securely. Example (local run):
 	```bash
+Developer tips:
+- The scanner uses `mobile_scanner`. In debug mode the "Simulate Scan" button is visible to quickly test the product lookup flow.
+- To provide your Keepa API key at runtime use `--dart-define`: `flutter run --dart-define=KEEPA_API_KEY=YOUR_KEY`.
 	export KEEPA_API_KEY="your_keepa_key_here"
 	flutter run --dart-define=KEEPA_API_KEY=$KEEPA_API_KEY
 	```
