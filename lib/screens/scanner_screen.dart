@@ -73,12 +73,12 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                     try {
                       final product = await ref.read(productFutureProvider(code).future);
                       if (!mounted) return;
-                      await Navigator.of(context).push(
+                      await Navigator.of(context).push( // ignore: use_build_context_synchronously
                         MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)),
                       );
                     } catch (e) {
                       if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar( // ignore: use_build_context_synchronously
                           SnackBar(content: Text('Lookup failed: $e')),
                         );
                       }
@@ -131,13 +131,16 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                 // scanning brackets
                 Center(child: ScanBrackets()),
                 // Scan area rectangle
-                Center(
-                  child: Container(
+                const Center(
+                  child: SizedBox(
                     width: 260,
                     height: 180,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.white54, width: 2)),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                        border: Border.fromBorderSide(BorderSide(color: Colors.white54, width: 2)),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -158,12 +161,12 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen> {
                       try {
                         final product = await ref.read(productFutureProvider(code).future);
                         if (!mounted) return;
-                        await Navigator.of(context).push(
+                        await Navigator.of(context).push( // ignore: use_build_context_synchronously
                           MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)),
                         );
                       } catch (_) {
                         if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar( // ignore: use_build_context_synchronously
                             const SnackBar(content: Text('Lookup failed')),
                           );
                         }
